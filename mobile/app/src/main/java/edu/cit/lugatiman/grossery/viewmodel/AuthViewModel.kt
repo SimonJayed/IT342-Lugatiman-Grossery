@@ -32,7 +32,8 @@ class AuthViewModel(
                     authData?.accessToken?.let { tokenManager.saveToken(it) }
                     _loginResult.postValue(Result.success(authData!!))
                 } else {
-                    _loginResult.postValue(Result.failure(Exception(response.body()?.message ?: "Login failed")))
+                    val errorMsg = response.body()?.message ?: "Login failed (Invalid Credentials)"
+                    _loginResult.postValue(Result.failure(Exception(errorMsg)))
                 }
             } catch (e: Exception) {
                 _loginResult.postValue(Result.failure(e))
@@ -47,7 +48,6 @@ class AuthViewModel(
                 val response = repository.register(req)
                 if (response.isSuccessful && response.body()?.success == true) {
                     val authData = response.body()?.data
-                    authData?.accessToken?.let { tokenManager.saveToken(it) }
                     _registerResult.postValue(Result.success(authData!!))
                 } else {
                     _registerResult.postValue(Result.failure(Exception(response.body()?.message ?: "Registration failed")))

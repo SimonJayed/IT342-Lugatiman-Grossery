@@ -5,6 +5,7 @@ import edu.cit.lugatiman.grossery.model.AuthData
 import edu.cit.lugatiman.grossery.model.GroceryItem
 import edu.cit.lugatiman.grossery.model.LoginRequest
 import edu.cit.lugatiman.grossery.model.RegisterRequest
+import edu.cit.lugatiman.grossery.model.UserProfile
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -20,6 +21,9 @@ interface ApiService {
 
     @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): Response<ApiResponse<AuthData>>
+
+    @GET("user/me")
+    suspend fun getCurrentUser(): Response<ApiResponse<UserProfile>>
 
     @GET("groceries")
     suspend fun getGroceries(): Response<ApiResponse<List<GroceryItem>>>

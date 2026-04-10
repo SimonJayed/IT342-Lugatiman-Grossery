@@ -59,11 +59,11 @@ public class AuthController {
             User userDetails = userService.findByEmail(loginDto.getEmail())
                     .orElseThrow(() -> new RuntimeException("User not found after authentication"));
 
-            return ResponseEntity.ok(new JwtAuthenticationResponse(
+            return ResponseEntity.ok(new ApiResponse(true, "Login successful", new JwtAuthenticationResponse(
                     jwt,
                     userDetails.getEmail(),
                     userDetails.getFirstName(),
-                    userDetails.getLastName()));
+                    userDetails.getLastName())));
         } catch (org.springframework.security.core.AuthenticationException e) {
             return new ResponseEntity<>(
                     new ApiResponse(false, "Authentication failed: Invalid email or password"),
