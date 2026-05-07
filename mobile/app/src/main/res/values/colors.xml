@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- SDD Grossery Design System Colors -->
+    <color name="primary">#9cc97f</color>
+    <color name="background">#f5faf2</color>
+    <color name="dark_accent">#2d4a22</color>
+    <color name="warning">#e8a838</color>
+    <color name="error">#d95f4b</color>
+    
+    <color name="text_dark">#1a1f16</color>
+    <color name="text_hint">#8e9c8e</color>
+    <color name="stroke_light">#d3dfcd</color>
+    
+    <!-- Sidebar Refinement Colors -->
+    <color name="brand_lime">#D6E8B6</color>
+    <color name="nav_selected_bg">#3E602E</color>
+    <color name="nav_text_unselected">#A5B997</color>
+</resources>

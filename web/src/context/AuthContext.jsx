@@ -10,9 +10,10 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const response = await api.post('/auth/login', { email, password });
-            if (response.data.accessToken) {
-                localStorage.setItem("user", JSON.stringify(response.data));
-                setUser(response.data);
+            const authData = response.data.data;
+            if (authData && authData.accessToken) {
+                localStorage.setItem("user", JSON.stringify(authData));
+                setUser(authData);
             }
             return { success: true };
         } catch (error) {

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:background="@color/dark_accent"
+    android:orientation="vertical"
+    android:paddingTop="48dp"
+    android:layout_gravity="start">
+
+    <!-- Header / Logo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp">
+        
+        <TextView
+            style="@style/GrosseryLogoStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gross"
+            android:textColor="@color/brand_lime"
+            android:textSize="36sp" />
+
+        <TextView
+            style="@style/GrosseryLogoStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ery"
+            android:textColor="@color/primary"
+            android:textSize="36sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginHorizontal="24dp"
+        android:background="#20FFFFFF" />
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadeScrollbars="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="24dp">
+
+            <!-- MAIN Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="24dp"
+                android:paddingBottom="8dp"
+                android:text="MAIN"
+                android:textColor="@color/brand_lime"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/nav_dashboard"
+                style="@style/NavRowStyle">
+                <View style="@style/NavIndicatorStyle" android:id="@+id/indicator_dashboard" />
+                <TextView style="@style/NavIconStyle" android:text="📊" />
+                <TextView style="@style/NavTextStyle" android:text="Dashboard" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_items"
+                style="@style/NavRowStyle">
+                <View style="@style/NavIndicatorStyle" android:id="@+id/indicator_items" />
+                <TextView style="@style/NavIconStyle" android:text="🛒" />
+                <TextView style="@style/NavTextStyle" android:text="Grocery Items" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_logs"
+                style="@style/NavRowStyle">
+                <View style="@style/NavIndicatorStyle" android:id="@+id/indicator_logs" />
+                <TextView style="@style/NavIconStyle" android:text="📋" />
+                <TextView style="@style/NavTextStyle" android:text="Consumption Log" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_expiry"
+                style="@style/NavRowStyle"
+                android:layout_marginBottom="24dp">
+                <View style="@style/NavIndicatorStyle" android:id="@+id/indicator_expiry" />
+                <TextView style="@style/NavIconStyle" android:text="⏰" />
+                <TextView style="@style/NavTextStyle" android:text="Expiry Tracker" />
+            </LinearLayout>
+
+            <!-- ACCOUNT Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="24dp"
+                android:paddingBottom="8dp"
+                android:text="ACCOUNT"
+                android:textColor="@color/brand_lime"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/nav_profile"
+                style="@style/NavRowStyle">
+                <View style="@style/NavIndicatorStyle" android:id="@+id/indicator_profile" />
+                <TextView style="@style/NavIconStyle" android:text="👤" />
+                <TextView style="@style/NavTextStyle" android:text="Profile" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_logout"
+                style="@style/NavRowStyle">
+                <View style="@style/NavIndicatorStyle" android:id="@+id/indicator_logout" />
+                <TextView style="@style/NavIconStyle" android:text="📤" />
+                <TextView style="@style/NavTextStyle" android:text="Sign Out" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Footer Profile Section -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#40FFFFFF" />
+
+    <LinearLayout
+        android:id="@+id/nav_footer_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/nav_footer_initial"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_circle_avatar"
+            android:gravity="center"
+            android:text="J"
+            android:textColor="@color/dark_accent"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nav_footer_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User Name"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/nav_footer_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="email@example.com"
+                android:textColor="@color/nav_text_unselected"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="▼"
+            android:textColor="@color/nav_text_unselected"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</LinearLayout>
