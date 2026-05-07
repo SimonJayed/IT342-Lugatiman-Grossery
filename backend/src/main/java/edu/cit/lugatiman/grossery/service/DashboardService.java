@@ -29,28 +29,32 @@ public class DashboardService {
     @Autowired
     private MonthlyConsumptionRepository consumptionRepository;
 
-    public DashboardComparisonDto getComparisonData(String email) {
+    public DashboardComparisonDto getComparisonData(String email, String month, Integer year) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         
         LocalDate now = LocalDate.now();
-        String currentMonth = now.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-        int currentYear = now.getYear();
+        String queryMonth = (month != null) ? month : now.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        int queryYear = (year != null) ? year : now.getYear();
 
         DashboardComparisonDto dashboardDto = new DashboardComparisonDto();
-        dashboardDto.setMonth(currentMonth);
-        dashboardDto.setYear(currentYear);
+        dashboardDto.setMonth(queryMonth);
+        dashboardDto.setYear(queryYear);
 
         List<DashboardComparisonDto.ComparisonItemDto> itemDtos = new ArrayList<>();
         List<GroceryItem> userGroceries = groceryItemRepository.findByUser(user);
 
         for (GroceryItem item : userGroceries) {
-            Optional<MonthlyConsumption> consumption = consumptionRepository.findByGroceryItemAndMonthAndYear(item, currentMonth, currentYear);
+            Optional<MonthlyConsumption> consumption = consumptionRepository.findByGroceryItemAndMonthAndYear(item, queryMonth, queryYear);
             
             double expected = item.getExpectedMonthlyConsumption() != null ? item.getExpectedMonthlyConsumption() : 0.0;
-            double actual = consumption.isPresent() && consumption.get().getActualConsumption() != null ? consumption.get().getActualConsumption() : 0.0;
+            // Default to 0.0 if not logged
+            double actual = (consumption.isPresent() && consumption.get().getActualConsumption() != null)
+                    ? consumption.get().getActualConsumption() 
+                    : 0.0; 
             double variance = actual - expected;
 
             DashboardComparisonDto.ComparisonItemDto itemDto = new DashboardComparisonDto.ComparisonItemDto();
+            itemDto.setId(item.getId());
             itemDto.setName(item.getItemName());
             itemDto.setExpected(expected);
             itemDto.setActual(actual);
