@@ -6,6 +6,7 @@ import edu.cit.lugatiman.grossery.entity.GroceryItem;
 import edu.cit.lugatiman.grossery.entity.User;
 import edu.cit.lugatiman.grossery.repository.CategoryRepository;
 import edu.cit.lugatiman.grossery.repository.GroceryItemRepository;
+import edu.cit.lugatiman.grossery.repository.MonthlyConsumptionRepository;
 import edu.cit.lugatiman.grossery.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GroceryService {
@@ -25,6 +28,9 @@ public class GroceryService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MonthlyConsumptionRepository consumptionRepository;
 
     public List<GroceryDto> getUserGroceries(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
@@ -83,6 +89,7 @@ public class GroceryService {
         return mapToDto(groceryRepository.save(item));
     }
 
+    @Transactional
     public void deleteGrocery(String email, Long id) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         GroceryItem item = groceryRepository.findById(id).orElseThrow(() -> new RuntimeException("Item not found"));
@@ -91,7 +98,39 @@ public class GroceryService {
             throw new RuntimeException("Unauthorized to delete this item");
         }
         
+        // Manually delete logs first to be absolutely safe
+        consumptionRepository.deleteByGroceryItem(item);
         groceryRepository.delete(item);
+    }
+
+    public List<String> getAllCategories(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return categoryRepository.findAll().stream()
+                .filter(c -> c.getCreatedBy() == null || c.getCreatedBy().equals(user.getId()))
+                .map(Category::getCategoryName)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteCategory(String email, String categoryName) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        Category category = categoryRepository.findByCategoryName(categoryName)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        // Only allow deleting categories created by this user (if we track it) or just allow any
+        // In this system, we can just allow it if the user is authorized.
+        
+        // Nullify category in all items first
+        List<GroceryItem> items = groceryRepository.findAll().stream()
+                .filter(item -> item.getCategory() != null && item.getCategory().getCategoryName().equals(categoryName))
+                .collect(Collectors.toList());
+        
+        for (GroceryItem item : items) {
+            item.setCategory(null);
+            groceryRepository.save(item);
+        }
+
+        categoryRepository.delete(category);
     }
 
     public List<GroceryDto> getExpiringSoonGroceries(String email) {

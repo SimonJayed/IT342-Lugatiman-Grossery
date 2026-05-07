@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "grocery_item")
@@ -36,4 +37,7 @@ public class GroceryItem {
 
     @Column(name = "expiration_date")
     private LocalDate expirationDate;
+
+    @OneToMany(mappedBy = "groceryItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MonthlyConsumption> consumptionLogs;
 }

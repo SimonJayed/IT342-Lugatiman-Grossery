@@ -32,3 +32,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+# Mobile (Android)
+mobile/app/build/
+mobile/.gradle/
+mobile/local.properties
+mobile/.navigation/
+mobile/captures/
+mobile/*.iml
+mobile/.externalNativeBuild/
+mobile/.cxx/
+mobile/*.apk
+mobile/*.aar

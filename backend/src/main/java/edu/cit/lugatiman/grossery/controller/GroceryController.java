@@ -24,6 +24,20 @@ public class GroceryController {
         return ResponseEntity.ok(new ApiResponse(true, "Groceries retrieved successfully", groceries));
     }
 
+    @GetMapping("/categories")
+    public ResponseEntity<ApiResponse> getCategories(Authentication authentication) {
+        String email = authentication.getName();
+        List<String> categories = groceryService.getAllCategories(email);
+        return ResponseEntity.ok(new ApiResponse(true, "Categories retrieved", categories));
+    }
+
+    @GetMapping("/expiring-soon")
+    public ResponseEntity<ApiResponse> getExpiringSoon(Authentication authentication) {
+        String email = authentication.getName();
+        List<GroceryDto> expiring = groceryService.getExpiringSoonGroceries(email);
+        return ResponseEntity.ok(new ApiResponse(true, "Expiring soon items retrieved", expiring));
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse> addGrocery(@RequestBody GroceryDto dto, Authentication authentication) {
         String email = authentication.getName();
@@ -45,10 +59,10 @@ public class GroceryController {
         return ResponseEntity.ok(new ApiResponse(true, "Grocery item deleted successfully", null));
     }
 
-    @GetMapping("/expiring-soon")
-    public ResponseEntity<ApiResponse> getExpiringSoon(Authentication authentication) {
+    @DeleteMapping("/categories/{name}")
+    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable String name, Authentication authentication) {
         String email = authentication.getName();
-        List<GroceryDto> expiring = groceryService.getExpiringSoonGroceries(email);
-        return ResponseEntity.ok(new ApiResponse(true, "Expiring soon items retrieved", expiring));
+        groceryService.deleteCategory(email, name);
+        return ResponseEntity.ok(new ApiResponse(true, "Category deleted successfully", null));
     }
 }

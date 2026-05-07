@@ -11,6 +11,7 @@ public class DashboardComparisonDto {
 
     @Data
     public static class ComparisonItemDto {
+        private Long id;
         private String name;
         private Double expected;
         private Double actual;
