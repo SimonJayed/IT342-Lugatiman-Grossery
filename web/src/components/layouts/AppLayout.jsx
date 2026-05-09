@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../features/auth/AuthContext';
 import ConfirmationModal from '../ConfirmationModal';
 
 const AppLayout = ({ children }) => {

@@ -1,6 +1,6 @@
 package edu.cit.lugatiman.grossery.security;
 
-import edu.cit.lugatiman.grossery.service.CustomUserDetailsService;
+import edu.cit.lugatiman.grossery.features.auth.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

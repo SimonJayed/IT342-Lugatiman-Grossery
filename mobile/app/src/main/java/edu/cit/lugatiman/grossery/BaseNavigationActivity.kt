@@ -10,11 +10,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
-import edu.cit.lugatiman.grossery.model.ApiResponse
-import edu.cit.lugatiman.grossery.model.UserProfile
+import edu.cit.lugatiman.grossery.features.auth.LoginActivity
+import edu.cit.lugatiman.grossery.features.auth.ProfileActivity
+import edu.cit.lugatiman.grossery.features.auth.TokenManager
+import edu.cit.lugatiman.grossery.features.auth.UserProfile
+import edu.cit.lugatiman.grossery.features.grocery.GroceryItemsActivity
+import edu.cit.lugatiman.grossery.features.grocery.ExpiryTrackerActivity
+import edu.cit.lugatiman.grossery.features.consumption.ConsumptionLogActivity
+import edu.cit.lugatiman.grossery.features.dashboard.MainActivity
 import edu.cit.lugatiman.grossery.network.ApiService
 import edu.cit.lugatiman.grossery.network.RetrofitClient
-import edu.cit.lugatiman.grossery.utils.TokenManager
 import kotlinx.coroutines.launch
 
 abstract class BaseNavigationActivity : AppCompatActivity() {

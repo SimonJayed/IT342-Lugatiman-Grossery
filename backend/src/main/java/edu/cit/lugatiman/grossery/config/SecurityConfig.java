@@ -1,7 +1,7 @@
 package edu.cit.lugatiman.grossery.config;
 
 import edu.cit.lugatiman.grossery.security.JwtAuthenticationFilter;
-import edu.cit.lugatiman.grossery.service.CustomUserDetailsService;
+import edu.cit.lugatiman.grossery.features.auth.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
