@@ -32,23 +32,58 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const loginWithToken = async (token) => {
+        try {
+            // Save token temporarily to make the /me call
+            const tempUser = { accessToken: token, tokenType: 'Bearer' };
+            localStorage.setItem("user", JSON.stringify(tempUser));
+            
+            // Fetch real user data using the /me endpoint
+            const response = await api.get('/user/me');
+            if (response.data.success) {
+                const userData = {
+                    ...response.data.data,
+                    accessToken: token,
+                    tokenType: 'Bearer'
+                };
+                localStorage.setItem("user", JSON.stringify(userData));
+                setUser(userData);
+                return { success: true };
+            }
+            return { success: false };
+        } catch (error) {
+            localStorage.removeItem("user");
+            return { success: false };
+        }
+    };
+
     const logout = () => {
         localStorage.removeItem("user");
         setUser(null);
-        // Optional: Call backend logout if needed, but for JWT it's mostly client-side
-        // api.post('/auth/logout').catch(err => console.error("Logout API failed", err));
     };
 
     const checkAuth = async () => {
+        setLoading(true);
         try {
-            const storedUser = JSON.parse(localStorage.getItem("user"));
-            if (storedUser && storedUser.accessToken) {
-                setUser(storedUser);
+            // 1. Check for token in URL (Google OAuth Redirect)
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            
+            if (token) {
+                // Clear URL parameters
+                window.history.replaceState({}, document.title, window.location.pathname);
+                await loginWithToken(token);
             } else {
-                setUser(null);
+                // 2. Check Local Storage
+                const storedUser = JSON.parse(localStorage.getItem("user"));
+                if (storedUser && storedUser.accessToken) {
+                    setUser(storedUser);
+                } else {
+                    setUser(null);
+                }
             }
         } catch (error) {
-            console.error("Failed to parse user from local storage", error);
+            console.error("Failed to check auth", error);
             setUser(null);
             localStorage.removeItem("user");
         }

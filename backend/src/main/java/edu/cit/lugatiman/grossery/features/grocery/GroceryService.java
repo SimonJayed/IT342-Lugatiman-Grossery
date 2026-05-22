@@ -110,6 +110,11 @@ public class GroceryService {
     @Transactional
     public void deleteCategory(String email, String categoryName) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (!"ROLE_ADMIN".equalsIgnoreCase(user.getRole())) {
+            throw new org.springframework.security.access.AccessDeniedException("Only administrators are authorized to delete categories.");
+        }
+        
         Category category = categoryRepository.findByCategoryName(categoryName)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
@@ -147,6 +152,12 @@ public class GroceryService {
         dto.setUnit(item.getUnit());
         dto.setExpectedMonthlyConsumption(item.getExpectedMonthlyConsumption());
         dto.setExpirationDate(item.getExpirationDate());
+        dto.setReceiptPaths(item.getReceipts() != null ? 
+                item.getReceipts().stream()
+                        .map(edu.cit.lugatiman.grossery.features.receipt.Receipt::getFilePath)
+                        .collect(Collectors.toList()) : 
+                new java.util.ArrayList<>()
+        );
         return dto;
     }
 }

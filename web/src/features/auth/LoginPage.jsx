@@ -12,8 +12,15 @@ const LoginPage = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, user } = useAuth();
     const { addToast } = useToast();
+
+    // Redirect to dashboard if already logged in
+    useEffect(() => {
+        if (user) {
+            navigate("/dashboard");
+        }
+    }, [user, navigate]);
 
     // Load saved email on mount
     useEffect(() => {
@@ -88,6 +95,34 @@ const LoginPage = () => {
                 <Button fullWidth type="submit" disabled={loading}>
                     {loading ? "Signing in..." : "Sign in"}
                 </Button>
+
+                <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: 'var(--muted)', fontSize: '0.85rem' }}>
+                    <div style={{ flex: 1, height: '1px', background: 'var(--border)' }}></div>
+                    <span style={{ margin: '0 10px' }}>or continue with</span>
+                    <div style={{ flex: 1, height: '1px', background: 'var(--border)' }}></div>
+                </div>
+
+                <a 
+                    href="http://localhost:8080/oauth2/authorization/google" 
+                    className="btn-secondary" 
+                    style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        gap: '10px', 
+                        width: '100%', 
+                        textDecoration: 'none',
+                        padding: '10px'
+                    }}
+                >
+                    <svg width="18" height="18" viewBox="0 0 18 18">
+                        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/>
+                        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184L12.048 13.56c-.802.537-1.826.854-3.048.854-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+                        <path fill="#FBBC05" d="M3.964 10.703c-.18-.537-.282-1.11-.282-1.703s.102-1.166.282-1.703V4.965H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.035l3.007-2.332z"/>
+                        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.965L3.964 7.298c.708-2.127 2.692-3.718 5.036-3.718z"/>
+                    </svg>
+                    Google
+                </a>
             </form>
 
             <div className="auth-switch">

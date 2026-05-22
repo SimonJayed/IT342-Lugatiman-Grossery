@@ -2,6 +2,7 @@ package edu.cit.lugatiman.grossery.features.grocery;
 
 import lombok.Data;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class GroceryDto {
@@ -11,4 +12,5 @@ public class GroceryDto {
     private String unit;
     private Double expectedMonthlyConsumption;
     private LocalDate expirationDate;
+    private List<String> receiptPaths;
 }

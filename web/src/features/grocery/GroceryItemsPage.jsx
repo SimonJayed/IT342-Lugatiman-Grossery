@@ -6,6 +6,8 @@ import ConfirmationModal from '../../components/ConfirmationModal';
 import api from '../../api/axios';
 import { useToast } from '../../context/ToastContext';
 
+import ReceiptModal from './ReceiptModal';
+
 const GroceryItemsPage = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -17,6 +19,8 @@ const GroceryItemsPage = () => {
     const [editItem, setEditItem] = useState(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
+    const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+    const [selectedReceiptItem, setSelectedReceiptItem] = useState(null);
     
     const { addToast } = useToast();
 
@@ -51,6 +55,25 @@ const GroceryItemsPage = () => {
     const handleDeleteClick = (item) => {
         setItemToDelete(item);
         setIsDeleteModalOpen(true);
+    };
+
+    const handleReceiptClick = (item) => {
+        setSelectedReceiptItem(item);
+        setIsReceiptModalOpen(true);
+    };
+
+    const handleReceiptUploaded = async () => {
+        // Fetch new state from backend
+        try {
+            const response = await api.get('/groceries');
+            if (response.data.success) {
+                setItems(response.data.data);
+                const updated = response.data.data.find(i => i.id === selectedReceiptItem.id);
+                if (updated) setSelectedReceiptItem(updated);
+            }
+        } catch (err) {
+            addToast('Failed to sync updated receipt details', 'error');
+        }
     };
 
     const confirmDelete = async () => {
@@ -139,7 +162,8 @@ const GroceryItemsPage = () => {
                                         <td>{item.expectedMonthlyConsumption}</td>
                                         <td>{item.unit}</td>
                                         <td style={{ textAlign: 'right' }}>
-                                            <button className="btn-icon" onClick={() => handleEditClick(item)} title="Edit">✏️</button>
+                                            <button className="btn-icon" onClick={() => handleReceiptClick(item)} title="Receipts" style={{ marginRight: '6px' }}>🧾</button>
+                                            <button className="btn-icon" onClick={() => handleEditClick(item)} title="Edit" style={{ marginRight: '6px' }}>✏️</button>
                                             <button className="btn-icon danger" onClick={() => handleDeleteClick(item)} title="Delete">🗑️</button>
                                         </td>
                                     </tr>
@@ -165,6 +189,13 @@ const GroceryItemsPage = () => {
                 message={`Are you sure you want to delete "${itemToDelete?.itemName}"?`}
                 confirmText="Delete"
                 isDanger={true}
+            />
+
+            <ReceiptModal 
+                isOpen={isReceiptModalOpen}
+                onClose={() => setIsReceiptModalOpen(false)}
+                item={selectedReceiptItem}
+                onReceiptUploaded={handleReceiptUploaded}
             />
         </AppLayout>
     );

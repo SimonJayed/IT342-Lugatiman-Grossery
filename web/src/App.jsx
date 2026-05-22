@@ -7,6 +7,8 @@ import DashboardPage from './features/dashboard/DashboardPage';
 import ProfilePage from './features/auth/ProfilePage';
 import GroceryItemsPage from './features/grocery/GroceryItemsPage';
 import ConsumptionLogPage from './features/consumption/ConsumptionLogPage';
+import MarketPricePage from './features/dashboard/MarketPricePage';
+import ExpiryPage from './features/dashboard/ExpiryPage';
 import ProtectedRoute from './features/auth/ProtectedRoute';
 import { ToastProvider } from './context/ToastContext';
 import { AuthProvider } from './features/auth/AuthContext';
@@ -29,6 +31,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <DashboardPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/market",
+    element: (
+      <ProtectedRoute>
+        <MarketPricePage />
       </ProtectedRoute>
     ),
   },
@@ -58,7 +68,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/expiry",
-    element: <Navigate to="/dashboard" replace />,
+    element: (
+      <ProtectedRoute>
+        <ExpiryPage />
+      </ProtectedRoute>
+    ),
   },
 ]);
 

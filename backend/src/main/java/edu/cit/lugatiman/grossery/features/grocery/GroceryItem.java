@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import edu.cit.lugatiman.grossery.features.receipt.Receipt;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -42,4 +43,7 @@ public class GroceryItem {
 
     @OneToMany(mappedBy = "groceryItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MonthlyConsumption> consumptionLogs;
+
+    @OneToMany(mappedBy = "groceryItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Receipt> receipts;
 }

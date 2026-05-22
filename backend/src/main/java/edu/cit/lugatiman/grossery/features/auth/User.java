@@ -28,8 +28,13 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "password_hash")
     private String password;
+
+    private String provider = "local"; // local, google, etc.
+    
+    @Column(name = "provider_id")
+    private String providerId;
 
     private String role = "ROLE_USER";
 

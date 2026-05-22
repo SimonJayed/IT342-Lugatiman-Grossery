@@ -46,6 +46,9 @@ const AppLayout = ({ children }) => {
                 <NavLink to="/consumption" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <span className="nav-icon">📋</span> Consumption Log
                 </NavLink>
+                <NavLink to="/market" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                    <span className="nav-icon">📈</span> Market Prices
+                </NavLink>
                 <NavLink to="/expiry" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <span className="nav-icon">⏰</span> Expiry Tracker
                 </NavLink>
