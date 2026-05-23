@@ -35,9 +35,34 @@ public class ConsumptionService {
         }
 
         double expected = item.getExpectedMonthlyConsumption() != null ? item.getExpectedMonthlyConsumption() : 0.0;
-        double actual = dto.getActualConsumption() != null ? dto.getActualConsumption() : 0.0;
-        double variance = actual - expected;
         
+        // Check if there is already a record for this month/year and update or create
+        Optional<MonthlyConsumption> existing = consumptionRepository.findByGroceryItemAndMonthAndYear(item, dto.getMonth(), dto.getYear());
+        MonthlyConsumption consumption;
+        double actual;
+        
+        if (existing.isPresent()) {
+            consumption = existing.get();
+            double incomingActual = dto.getActualConsumption() != null ? dto.getActualConsumption() : 0.0;
+            actual = Boolean.TRUE.equals(dto.getIncremental())
+                    ? (consumption.getActualConsumption() != null ? consumption.getActualConsumption() : 0.0) + incomingActual
+                    : incomingActual;
+        } else {
+            consumption = new MonthlyConsumption();
+            consumption.setGroceryItem(item);
+            consumption.setMonth(dto.getMonth());
+            consumption.setYear(dto.getYear());
+            actual = dto.getActualConsumption() != null ? dto.getActualConsumption() : 0.0;
+        }
+
+        if (actual < 0.0) {
+            actual = 0.0;
+        }
+
+        double variance = actual - expected;
+        consumption.setActualConsumption(actual);
+        consumption.setVariance(variance);
+
         String status;
         if (variance > 0) {
             status = "Overconsumed";
@@ -47,22 +72,6 @@ public class ConsumptionService {
             status = "Underconsumed";
         } else {
             status = "Balanced";
-        }
-
-        // Check if there is already a record for this month/year and update or create
-        Optional<MonthlyConsumption> existing = consumptionRepository.findByGroceryItemAndMonthAndYear(item, dto.getMonth(), dto.getYear());
-        MonthlyConsumption consumption;
-        if (existing.isPresent()) {
-            consumption = existing.get();
-            consumption.setActualConsumption(actual);
-            consumption.setVariance(variance);
-        } else {
-            consumption = new MonthlyConsumption();
-            consumption.setGroceryItem(item);
-            consumption.setMonth(dto.getMonth());
-            consumption.setYear(dto.getYear());
-            consumption.setActualConsumption(actual);
-            consumption.setVariance(variance);
         }
 
         consumptionRepository.save(consumption);

@@ -3,8 +3,12 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import api from '../../api/axios';
 import { useToast } from '../../context/ToastContext';
+import { useAuth } from '../auth/AuthContext';
 
 const GroceryModal = ({ isOpen, onClose, onItemSaved, editItem = null }) => {
+    const { user } = useAuth();
+    const isAdmin = user && user.role === 'ROLE_ADMIN';
+
     const [formData, setFormData] = useState({
         itemName: '',
         categoryName: '',
@@ -15,6 +19,7 @@ const GroceryModal = ({ isOpen, onClose, onItemSaved, editItem = null }) => {
     const [existingCategories, setExistingCategories] = useState([]);
     const [showCatManager, setShowCatManager] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [receiptFile, setReceiptFile] = useState(null);
     const { addToast } = useToast();
 
     const standardUnits = ['kg', 'g', 'liters', 'ml', 'loaves', 'pcs', 'packs', 'bottles', 'cans'];
@@ -23,6 +28,10 @@ const GroceryModal = ({ isOpen, onClose, onItemSaved, editItem = null }) => {
         if (isOpen) {
             fetchExistingCategories();
             setShowCatManager(false); // Reset to hidden by default
+            setReceiptFile(null); // Clear selected file
+            // Reset input element value manually if it exists
+            const fileInput = document.getElementById('grocery-receipt-input');
+            if (fileInput) fileInput.value = '';
         }
         
         if (editItem) {
@@ -80,6 +89,10 @@ const GroceryModal = ({ isOpen, onClose, onItemSaved, editItem = null }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleFileChange = (e) => {
+        setReceiptFile(e.target.files[0] || null);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -99,7 +112,27 @@ const GroceryModal = ({ isOpen, onClose, onItemSaved, editItem = null }) => {
             }
 
             if (response.data.success) {
-                addToast(editItem ? 'Item updated successfully!' : 'Item added successfully!', 'success');
+                const savedItem = response.data.data;
+                
+                // If receipt file is selected, upload it
+                if (receiptFile && savedItem && savedItem.id) {
+                    const uploadData = new FormData();
+                    uploadData.append('file', receiptFile);
+                    try {
+                        await api.post(`/groceries/${savedItem.id}/receipts`, uploadData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        });
+                        addToast(editItem ? 'Item updated & receipt uploaded!' : 'Item added & receipt uploaded!', 'success');
+                    } catch (uploadError) {
+                        console.error('Failed to upload receipt:', uploadError);
+                        addToast(editItem ? 'Item updated, but receipt upload failed' : 'Item added, but receipt upload failed', 'warning');
+                    }
+                } else {
+                    addToast(editItem ? 'Item updated successfully!' : 'Item added successfully!', 'success');
+                }
+                
                 onItemSaved();
                 onClose();
             } else {
@@ -134,27 +167,50 @@ const GroceryModal = ({ isOpen, onClose, onItemSaved, editItem = null }) => {
                         
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
                             <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted)', margin: 0 }}>CATEGORY</label>
-                            <button 
-                                type="button" 
-                                style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.7rem', cursor: 'pointer', fontWeight: 600 }}
-                                onClick={() => setShowCatManager(!showCatManager)}
-                            >
-                                {showCatManager ? 'Hide Manager' : 'Manage Categories'}
-                            </button>
+                            {isAdmin && (
+                                <button 
+                                    type="button" 
+                                    style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.7rem', cursor: 'pointer', fontWeight: 600 }}
+                                    onClick={() => setShowCatManager(!showCatManager)}
+                                >
+                                    {showCatManager ? 'Hide Manager' : 'Manage Categories'}
+                                </button>
+                            )}
                         </div>
-                        <Input
-                            name="categoryName"
-                            value={formData.categoryName}
-                            onChange={handleChange}
-                            placeholder="e.g. Meat"
-                            list="category-list"
-                            required
-                        />
-                        <datalist id="category-list">
-                            {existingCategories.map(cat => <option key={cat} value={cat} />)}
-                        </datalist>
 
-                        {showCatManager && (
+                        {isAdmin ? (
+                            <>
+                                <Input
+                                    name="categoryName"
+                                    value={formData.categoryName}
+                                    onChange={handleChange}
+                                    placeholder="e.g. Meat"
+                                    list="category-list"
+                                    required
+                                />
+                                <datalist id="category-list">
+                                    {existingCategories.map(cat => <option key={cat} value={cat} />)}
+                                </datalist>
+                            </>
+                        ) : (
+                            <select
+                                name="categoryName"
+                                value={formData.categoryName}
+                                onChange={handleChange}
+                                className="input-field"
+                                style={{ width: '100%', marginBottom: '15px', padding: '10px', borderRadius: '8px', border: '1px solid var(--border)' }}
+                                required
+                            >
+                                <option value="">-- Select Category --</option>
+                                {existingCategories.map(cat => (
+                                    <option key={cat} value={cat}>
+                                        {cat}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+
+                        {isAdmin && showCatManager && (
                             <div style={{ background: '#f8f9fa', padding: '10px', borderRadius: '8px', marginBottom: '15px', border: '1px solid #eee' }}>
                                 <p style={{ fontSize: '0.7rem', fontWeight: 600, marginBottom: '8px', color: '#666' }}>Existing Categories (Click 🗑️ to remove):</p>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -179,18 +235,24 @@ const GroceryModal = ({ isOpen, onClose, onItemSaved, editItem = null }) => {
                             </div>
                         )}
 
-                        <Input
-                            label="UNIT"
-                            name="unit"
-                            value={formData.unit}
-                            onChange={handleChange}
-                            placeholder="e.g. kg, liters"
-                            list="unit-list"
-                            required
-                        />
-                        <datalist id="unit-list">
-                            {standardUnits.map(unit => <option key={unit} value={unit} />)}
-                        </datalist>
+                        <div style={{ marginBottom: '15px' }}>
+                            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted)', marginBottom: '8px' }}>UNIT</label>
+                            <select
+                                name="unit"
+                                value={formData.unit}
+                                onChange={handleChange}
+                                className="input-field"
+                                style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border)' }}
+                                required
+                            >
+                                <option value="">-- Select Unit --</option>
+                                {standardUnits.map(u => (
+                                    <option key={u} value={u}>
+                                        {u}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
                         <Input
                             label="EXPECTED MONTHLY CONSUMPTION"
@@ -214,13 +276,14 @@ const GroceryModal = ({ isOpen, onClose, onItemSaved, editItem = null }) => {
                         <div style={{ marginTop: '1rem' }}>
                             <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--muted)', marginBottom: '8px' }}>RECEIPT IMAGE (OPTIONAL)</label>
                             <input 
+                                id="grocery-receipt-input"
                                 type="file" 
                                 className="input-field" 
                                 style={{ padding: '8px' }} 
-                                disabled={true} 
-                                title="Receipt upload is available via the Mobile App"
+                                accept="image/*"
+                                onChange={handleFileChange}
                             />
-                            <p style={{ fontSize: '0.7rem', color: 'var(--muted)', marginTop: '4px' }}>Note: Receipt management is currently optimized for mobile.</p>
+                            <p style={{ fontSize: '0.7rem', color: 'var(--muted)', marginTop: '4px' }}>Choose a receipt image to upload for proof or price credibility.</p>
                         </div>
                     </div>
                     <div className="modal-footer">

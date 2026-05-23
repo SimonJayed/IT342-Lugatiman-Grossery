@@ -17,7 +17,7 @@ public class MarketPrice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String itemName;
 
     private Double price;
@@ -25,4 +25,15 @@ public class MarketPrice {
     private String category;
     private String source;
     private Instant lastUpdated;
+
+    // Detailed Product Attributes
+    private String brand;
+    private String variant;
+    private String netContent;
+    private String packaging;
+
+    // Community Attributes
+    private String storeName;
+    private String storeLocation;
+    private String receiptPath;
 }

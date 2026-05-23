@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class GroceryService {
@@ -28,6 +29,32 @@ public class GroceryService {
     @Autowired
     private MonthlyConsumptionRepository consumptionRepository;
 
+    @PostConstruct
+    public void initDefaultCategories() {
+        String[] defaults = {
+            "Meat & Poultry",
+            "Seafood",
+            "Fruits",
+            "Vegetables",
+            "Dairy & Eggs",
+            "Bakery & Bread",
+            "Pantry Staples",
+            "Beverages",
+            "Snacks & Sweets",
+            "Canned Goods",
+            "Frozen Foods",
+            "Household & Personal Care"
+        };
+        for (String name : defaults) {
+            if (categoryRepository.findByCategoryName(name).isEmpty()) {
+                Category cat = new Category();
+                cat.setCategoryName(name);
+                cat.setCreatedBy(null); // System default
+                categoryRepository.save(cat);
+            }
+        }
+    }
+
     public List<GroceryDto> getUserGroceries(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         return groceryRepository.findByUser(user).stream().map(this::mapToDto).collect(Collectors.toList());
@@ -37,9 +64,12 @@ public class GroceryService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         
         Category category = null;
-        if (dto.getCategoryName() != null) {
+        if (dto.getCategoryName() != null && !dto.getCategoryName().trim().isEmpty()) {
             category = categoryRepository.findByCategoryName(dto.getCategoryName())
                     .orElseGet(() -> {
+                        if (!"ROLE_ADMIN".equalsIgnoreCase(user.getRole())) {
+                            throw new IllegalArgumentException("Only administrators are authorized to add new categories. Please select a predefined category.");
+                        }
                         Category newCat = new Category();
                         newCat.setCategoryName(dto.getCategoryName());
                         newCat.setCreatedBy(user.getId());
@@ -66,15 +96,20 @@ public class GroceryService {
             throw new RuntimeException("Unauthorized to modify this item");
         }
 
-        if (dto.getCategoryName() != null) {
+        if (dto.getCategoryName() != null && !dto.getCategoryName().trim().isEmpty()) {
             Category category = categoryRepository.findByCategoryName(dto.getCategoryName())
                     .orElseGet(() -> {
+                        if (!"ROLE_ADMIN".equalsIgnoreCase(user.getRole())) {
+                            throw new IllegalArgumentException("Only administrators are authorized to add new categories. Please select a predefined category.");
+                        }
                         Category newCat = new Category();
                         newCat.setCategoryName(dto.getCategoryName());
                         newCat.setCreatedBy(user.getId());
                         return categoryRepository.save(newCat);
                     });
             item.setCategory(category);
+        } else {
+            item.setCategory(null);
         }
 
         item.setItemName(dto.getItemName());

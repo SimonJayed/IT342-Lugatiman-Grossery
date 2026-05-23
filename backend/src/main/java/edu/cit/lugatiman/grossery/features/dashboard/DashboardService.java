@@ -59,6 +59,7 @@ public class DashboardService {
             itemDto.setExpected(expected);
             itemDto.setActual(actual);
             itemDto.setVariance(variance);
+            itemDto.setUnit(item.getUnit());
             
             itemDtos.add(itemDto);
         }

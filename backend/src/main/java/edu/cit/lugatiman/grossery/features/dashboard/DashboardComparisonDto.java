@@ -16,5 +16,6 @@ public class DashboardComparisonDto {
         private Double expected;
         private Double actual;
         private Double variance;
+        private String unit;
     }
 }
