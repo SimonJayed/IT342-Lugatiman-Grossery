@@ -45,12 +45,15 @@ public class CookieUtils {
     public static <T> T deserialize(Cookie cookie, Class<T> cls) {
         try {
             byte[] bytes = Base64.getUrlDecoder().decode(cookie.getValue());
-            Object object = SerializationUtils.deserialize(bytes);
-            return cls.cast(object);
+            try (java.io.ByteArrayInputStream bis = new java.io.ByteArrayInputStream(bytes);
+                 java.io.ObjectInputStream ois = new java.io.ObjectInputStream(bis)) {
+                Object object = ois.readObject();
+                return cls.cast(object);
+            }
         } catch (Exception e) {
             System.err.println("[CookieUtils] Deserialization failed for cookie: " + cookie.getName());
             e.printStackTrace();
-            throw e;
+            throw new RuntimeException(e);
         }
     }
     

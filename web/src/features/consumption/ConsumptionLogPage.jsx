@@ -43,47 +43,55 @@ const ConsumptionLogPage = () => {
     const years = [2024, 2025, 2026];
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
+        let intervalId;
+        const fetchData = async (showLoading = false) => {
+            if (showLoading) setLoading(true);
             try {
                 // Fetch comparison data for the selected month/year
                 const response = await api.get(`/dashboard/comparison?month=${selectedMonth}&year=${selectedYear}`);
                 if (response.data.success) {
                     const data = response.data.data;
-                    setItems(data.items.map(item => ({
-                        id: item.id || data.items.indexOf(item), // Fallback if no ID, but better to have it
-                        itemName: item.name,
-                        expectedMonthlyConsumption: item.expected,
-                        actual: item.actual,
-                        unit: '' // Unit might be missing from dashboard DTO, but items fetch has it. 
-                    })));
 
                     // Fetch full items list to get units and IDs correctly
                     const itemsRes = await api.get('/groceries');
                     if (itemsRes.data.success) {
                         const fullItems = itemsRes.data.data;
-                        const initialData = {};
-                        
-                        fullItems.forEach(item => {
-                            // Find corresponding data from dashboard comparison using ID
-                            const compItem = data.items.find(ci => ci.id === item.id);
-                            // Default to 0.0 if no actual exists
-                            initialData[item.id] = compItem ? compItem.actual : 0.0;
-                        });
                         
                         setItems(fullItems);
-                        setConsumptionData(initialData);
+
+                        // Only overwrite inputs from database background sync if form is not dirty
+                        if (!isDirty) {
+                            const initialData = {};
+                            fullItems.forEach(item => {
+                                // Find corresponding data from dashboard comparison using ID
+                                const compItem = data.items.find(ci => ci.id === item.id);
+                                // Default to 0.0 if no actual exists
+                                initialData[item.id] = compItem ? compItem.actual : 0.0;
+                            });
+                            setConsumptionData(initialData);
+                        }
                     }
                 }
             } catch (error) {
-                addToast('Failed to fetch data', 'error');
+                if (showLoading) addToast('Failed to fetch data', 'error');
             } finally {
-                setLoading(false);
-                setIsDirty(false); // Reset dirty state on load
+                if (showLoading) {
+                    setLoading(false);
+                    setIsDirty(false); // Reset dirty state on initial load
+                }
             }
         };
-        fetchData();
-    }, [selectedMonth, selectedYear]);
+
+        fetchData(true);
+
+        intervalId = setInterval(() => {
+            if (!isDirty) {
+                fetchData(false);
+            }
+        }, 3000);
+
+        return () => clearInterval(intervalId);
+    }, [selectedMonth, selectedYear, isDirty]);
 
     const handleInputChange = (id, value) => {
         setConsumptionData(prev => ({ ...prev, [id]: value }));

@@ -58,14 +58,16 @@
                             android:layout_marginBottom="8dp"/>
 
                         <TextView
+                            android:id="@+id/tvExpectedCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="47.5"
+                            android:text="0.0"
                             android:textColor="@color/white"
                             android:textSize="32sp"
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/tvExpectedSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="units/month"
@@ -93,18 +95,20 @@
                             android:layout_marginBottom="8dp"/>
 
                         <TextView
+                            android:id="@+id/tvActualCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="52.0"
+                            android:text="0.0"
                             android:textColor="@color/dark_accent"
                             android:textSize="32sp"
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/tvActualSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="▲ 4.5 over"
-                            android:textColor="@color/error"
+                            android:text="0.0 relative to goal"
+                            android:textColor="@color/text_hint"
                             android:textSize="12sp"
                             android:textStyle="bold"/>
                     </LinearLayout>
@@ -137,9 +141,10 @@
                             android:layout_marginBottom="8dp"/>
 
                         <TextView
+                            android:id="@+id/tvExpiringCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2"
+                            android:text="0"
                             android:textColor="@color/dark_accent"
                             android:textSize="24sp"
                             android:textStyle="bold"/>
@@ -147,7 +152,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Within 7 days"
+                            android:text="Within 3 days"
                             android:textColor="@color/text_hint"
                             android:textSize="12sp"/>
                     </LinearLayout>
@@ -172,9 +177,10 @@
                             android:layout_marginBottom="8dp"/>
 
                         <TextView
+                            android:id="@+id/tvExpiredCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1"
+                            android:text="0"
                             android:textColor="@color/dark_accent"
                             android:textSize="24sp"
                             android:textStyle="bold"/>
@@ -182,7 +188,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Remove now"
+                            android:text="Action required"
                             android:textColor="@color/text_hint"
                             android:textSize="12sp"/>
                     </LinearLayout>
@@ -206,16 +212,16 @@
                         android:textStyle="bold"
                         android:layout_marginBottom="16dp"/>
 
-                    <!-- Items breakdown omitted for brevity in drawer layout example -->
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvDashboardItems"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Eggs: 14.5/12\nMilk: 3.5/4"
-                        android:textColor="@color/text_dark" />
+                        android:nestedScrollingEnabled="false" />
                 </LinearLayout>
 
                 <!-- Alerts Panel -->
                 <LinearLayout
+                    android:id="@+id/panelAlerts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -227,7 +233,16 @@
                         android:text="⚠️ ALERTS"
                         android:textColor="@color/dark_accent"
                         android:textSize="14sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
+                    
+                    <TextView
+                        android:id="@+id/tvAlertsSummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Everything looks good! No alerts at this time."
+                        android:textColor="@color/text_hint"
+                        android:textSize="13sp"/>
                 </LinearLayout>
 
             </LinearLayout>

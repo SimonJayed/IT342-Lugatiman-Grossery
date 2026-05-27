@@ -1,6 +1,6 @@
 package edu.cit.lugatiman.grossery.network
 
-import edu.cit.lugatiman.grossery.utils.TokenManager
+import edu.cit.lugatiman.grossery.features.auth.TokenManager
 import okhttp3.Interceptor
 import okhttp3.Response
 

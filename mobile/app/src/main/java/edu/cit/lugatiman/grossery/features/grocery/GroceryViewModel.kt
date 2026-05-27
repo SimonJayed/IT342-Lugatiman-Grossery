@@ -12,6 +12,9 @@ class GroceryViewModel(private val repository: GroceryRepository) : ViewModel() 
     private val _groceries = MutableLiveData<Result<List<GroceryItem>>>()
     val groceries: LiveData<Result<List<GroceryItem>>> = _groceries
 
+    private val _expiringGroceries = MutableLiveData<Result<List<GroceryItem>>>()
+    val expiringGroceries: LiveData<Result<List<GroceryItem>>> = _expiringGroceries
+
     private val _actionResult = MutableLiveData<Result<String>>()
     val actionResult: LiveData<Result<String>> = _actionResult
 
@@ -58,6 +61,21 @@ class GroceryViewModel(private val repository: GroceryRepository) : ViewModel() 
                 }
             } catch (e: Exception) {
                 _actionResult.postValue(Result.failure(e))
+            }
+        }
+    }
+
+    fun fetchExpiringSoon() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getExpiringSoon()
+                if (response.isSuccessful && response.body()?.success == true) {
+                    _expiringGroceries.postValue(Result.success(response.body()?.data ?: emptyList()))
+                } else {
+                    _expiringGroceries.postValue(Result.failure(Exception(response.body()?.message ?: "Failed to fetch expiring soon items")))
+                }
+            } catch (e: Exception) {
+                _expiringGroceries.postValue(Result.failure(e))
             }
         }
     }

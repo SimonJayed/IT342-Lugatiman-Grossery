@@ -17,29 +17,33 @@ const DashboardPage = () => {
     });
     const { addToast } = useToast();
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            setLoading(true);
-            try {
-                const [comparisonRes, expiringRes] = await Promise.all([
-                    api.get('/dashboard/comparison'),
-                    api.get('/groceries/expiring-soon')
-                ]);
+    const fetchDashboardData = async (showLoading = false) => {
+        if (showLoading) setLoading(true);
+        try {
+            const [comparisonRes, expiringRes] = await Promise.all([
+                api.get('/dashboard/comparison'),
+                api.get('/groceries/expiring-soon')
+            ]);
 
-                if (comparisonRes.data.success) {
-                    setDashboardData(comparisonRes.data.data);
-                }
-                if (expiringRes.data.success) {
-                    setExpiringSoon(expiringRes.data.data);
-                }
-            } catch (error) {
-                addToast('Failed to load dashboard data', 'error');
-            } finally {
-                setLoading(false);
+            if (comparisonRes.data.success) {
+                setDashboardData(comparisonRes.data.data);
             }
-        };
+            if (expiringRes.data.success) {
+                setExpiringSoon(expiringRes.data.data);
+            }
+        } catch (error) {
+            if (showLoading) addToast('Failed to load dashboard data', 'error');
+        } finally {
+            if (showLoading) setLoading(false);
+        }
+    };
 
-        fetchDashboardData();
+    useEffect(() => {
+        fetchDashboardData(true);
+        const intervalId = setInterval(() => {
+            fetchDashboardData(false);
+        }, 3000);
+        return () => clearInterval(intervalId);
     }, []);
 
     const handleDismissAlert = (itemId) => {

@@ -47,9 +47,12 @@ interface ApiService {
     suspend fun getDashboardSummary(): Response<ApiResponse<Any>>
 
     @GET("dashboard/comparison")
-    suspend fun getDashboardComparison(): Response<ApiResponse<Any>>
+    suspend fun getDashboardComparison(): Response<ApiResponse<edu.cit.lugatiman.grossery.features.dashboard.DashboardComparison>>
 
     @POST("groceries/{id}/consumption")
-    suspend fun logConsumption(@Path("id") id: Long, @Body data: Any): Response<ApiResponse<Any>>
+    suspend fun logConsumption(
+        @Path("id") id: Long,
+        @Body data: Any
+    ): Response<ApiResponse<Any>>
 
 }

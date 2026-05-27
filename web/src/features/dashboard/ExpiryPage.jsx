@@ -8,22 +8,26 @@ const ExpiryPage = () => {
     const [loading, setLoading] = useState(true);
     const { addToast } = useToast();
 
-    const fetchGroceries = async () => {
-        setLoading(true);
+    const fetchGroceries = async (showLoading = false) => {
+        if (showLoading) setLoading(true);
         try {
             const response = await api.get('/groceries');
             if (response.data.success) {
                 setGroceries(response.data.data);
             }
         } catch (error) {
-            addToast('Failed to load expiry inventory data.', 'error');
+            if (showLoading) addToast('Failed to load expiry inventory data.', 'error');
         } finally {
-            setLoading(false);
+            if (showLoading) setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchGroceries();
+        fetchGroceries(true);
+        const intervalId = setInterval(() => {
+            fetchGroceries(false);
+        }, 3000);
+        return () => clearInterval(intervalId);
     }, []);
 
     const handleDelete = async (id, name) => {
