@@ -23,7 +23,13 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(Authentication authentication) {
-        String email = authentication.getName();
+        String email;
+        if (authentication.getPrincipal() instanceof org.springframework.security.oauth2.core.user.OAuth2User) {
+            email = ((org.springframework.security.oauth2.core.user.OAuth2User) authentication.getPrincipal()).getAttribute("email");
+        } else {
+            email = authentication.getName();
+        }
+        
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationInMs);
 

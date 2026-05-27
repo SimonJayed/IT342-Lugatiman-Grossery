@@ -18,105 +18,24 @@
             android:layout_height="match_parent"
             android:padding="16dp">
 
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Grocery Items"
-                android:textSize="28sp"
-                android:textColor="@color/dark_accent"
-                android:fontFamily="serif"
-                android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-            <!-- Search Bar Mock -->
+            <!-- Search Bar -->
             <EditText
                 android:id="@+id/etSearch"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="24dp"
                 android:background="@drawable/bg_rounded_input"
                 android:hint="🔍 Search items..."
                 android:paddingStart="16dp"
                 android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@id/tvTitle"/>
+                app:layout_constraintTop_toTopOf="parent"/>
 
-            <ScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvGroceryItems"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintTop_toBottomOf="@id/etSearch"
-                app:layout_constraintBottom_toBottomOf="parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- Mock Item 1: Eggs -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_card_white"
-                        android:orientation="horizontal"
-                        android:padding="16dp"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
-                        
-                        <TextView android:layout_width="40dp" android:layout_height="40dp" android:text="🥚" android:textSize="24sp" android:gravity="center"/>
-                        
-                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="16dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Eggs" android:textColor="@color/text_dark" android:textStyle="bold" android:textSize="18sp"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PROTEIN • 12 pcs/month" android:textColor="@color/text_hint" android:textSize="12sp"/>
-                        </LinearLayout>
-
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⋮" android:textSize="24sp" android:textColor="@color/text_hint"/>
-                    </LinearLayout>
-
-                    <!-- Mock Item 2: Milk -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_card_white"
-                        android:orientation="horizontal"
-                        android:padding="16dp"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
-                        
-                        <TextView android:layout_width="40dp" android:layout_height="40dp" android:text="🥛" android:textSize="24sp" android:gravity="center"/>
-                        
-                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="16dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Milk" android:textColor="@color/text_dark" android:textStyle="bold" android:textSize="18sp"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="DAIRY • 4 liters/month" android:textColor="@color/text_hint" android:textSize="12sp"/>
-                        </LinearLayout>
-
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⋮" android:textSize="24sp" android:textColor="@color/text_hint"/>
-                    </LinearLayout>
-
-                    <!-- Mock Item 3: Rice -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_card_white"
-                        android:orientation="horizontal"
-                        android:padding="16dp"
-                        android:layout_marginBottom="12dp"
-                        android:gravity="center_vertical">
-                        
-                        <TextView android:layout_width="40dp" android:layout_height="40dp" android:text="🌾" android:textSize="24sp" android:gravity="center"/>
-                        
-                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="16dp">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rice" android:textColor="@color/text_dark" android:textStyle="bold" android:textSize="18sp"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="GRAINS • 5 kg/month" android:textColor="@color/text_hint" android:textSize="12sp"/>
-                        </LinearLayout>
-
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⋮" android:textSize="24sp" android:textColor="@color/text_hint"/>
-                    </LinearLayout>
-
-                </LinearLayout>
-            </ScrollView>
+                app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 

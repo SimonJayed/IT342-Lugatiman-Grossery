@@ -1,15 +1,17 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import ProfilePage from './pages/ProfilePage';
-import GroceryItemsPage from './pages/GroceryItemsPage';
-import ConsumptionLogPage from './pages/ConsumptionLogPage';
-import ProtectedRoute from './components/ProtectedRoute';
+import LoginPage from './features/auth/LoginPage';
+import RegisterPage from './features/auth/RegisterPage';
+import DashboardPage from './features/dashboard/DashboardPage';
+import ProfilePage from './features/auth/ProfilePage';
+import GroceryItemsPage from './features/grocery/GroceryItemsPage';
+import ConsumptionLogPage from './features/consumption/ConsumptionLogPage';
+import MarketPricePage from './features/dashboard/MarketPricePage';
+import ExpiryPage from './features/dashboard/ExpiryPage';
+import ProtectedRoute from './features/auth/ProtectedRoute';
 import { ToastProvider } from './context/ToastContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './features/auth/AuthContext';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <DashboardPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/market",
+    element: (
+      <ProtectedRoute>
+        <MarketPricePage />
       </ProtectedRoute>
     ),
   },
@@ -58,7 +68,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/expiry",
-    element: <Navigate to="/dashboard" replace />,
+    element: (
+      <ProtectedRoute>
+        <ExpiryPage />
+      </ProtectedRoute>
+    ),
   },
 ]);
 

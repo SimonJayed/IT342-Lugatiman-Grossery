@@ -1,7 +1,7 @@
 package edu.cit.lugatiman.grossery.network
 
 import android.content.Context
-import edu.cit.lugatiman.grossery.utils.TokenManager
+import edu.cit.lugatiman.grossery.features.auth.TokenManager
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

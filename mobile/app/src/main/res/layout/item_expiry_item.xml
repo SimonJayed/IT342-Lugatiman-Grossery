@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card_white"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_marginBottom="16dp">
+
+    <!-- Row 1: Product Name and Status Badge -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvExpiryItemName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🍎 Apple"
+            android:textColor="@color/text_dark"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/tvExpiryBadge"
+            android:layout_marginEnd="16dp"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/tvExpiryBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FRESH"
+            android:background="@drawable/bg_rounded_input"
+            android:textColor="@color/primary"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:textStyle="bold"
+            android:textSize="11sp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <!-- Row 2: Expected units and Date -->
+    <TextView
+        android:id="@+id/tvExpiryDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3 units • Feb 15, 2026"
+        android:textColor="@color/text_hint"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"/>
+
+    <!-- Row 3: Remaining Days countdown -->
+    <TextView
+        android:id="@+id/tvExpiryCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="55d ago"
+        android:textColor="@color/error"
+        android:layout_marginTop="4dp"
+        android:textStyle="bold"
+        android:textSize="13sp"/>
+
+</LinearLayout>

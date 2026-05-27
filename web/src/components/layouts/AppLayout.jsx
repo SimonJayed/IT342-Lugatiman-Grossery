@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../features/auth/AuthContext';
 import ConfirmationModal from '../ConfirmationModal';
 
 const AppLayout = ({ children }) => {
@@ -45,6 +45,9 @@ const AppLayout = ({ children }) => {
                 </NavLink>
                 <NavLink to="/consumption" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <span className="nav-icon">📋</span> Consumption Log
+                </NavLink>
+                <NavLink to="/market" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                    <span className="nav-icon">📈</span> Market Prices
                 </NavLink>
                 <NavLink to="/expiry" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                     <span className="nav-icon">⏰</span> Expiry Tracker
